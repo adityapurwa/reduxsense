@@ -1,0 +1,23 @@
+{
+  "name": "@myriatek/reduxsense",
+  "version": "1.0.0",
+  "description": "A standard on making React and Redux work better.",
+  "main": "index.js",
+  "author": "Aditya Purwa",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
+    "webpack": "^3.8.1"
+  },
+  "scripts": {
+    "watch": "webpack --watch",
+    "dev": "webpack"
+  }
+}
