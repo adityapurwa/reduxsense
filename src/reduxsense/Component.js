@@ -6,8 +6,17 @@ export class Sense {
     constructor(component) {
         this.component = component;
 
-        this.setupInitialState();
-        this.setupActions();
+        if (this.component.data) {
+            this.setupInitialState();
+        }
+        if (this.component.actions) {
+            this.setupActions();
+        }
+        if (this.component.exports) {
+            if (this.component.exports()) {
+                Sense.Exports[this.component.props.ns] = this.component;
+            }
+        }
         this.setupSubscriptions();
     }
 
@@ -33,7 +42,7 @@ export class Sense {
         }
         Sense.GlobalReducers[this.component.props.ns] = (state = this.state, action) => {
             if (this.actionsBridge.hasOwnProperty(action.type)) {
-                return Object.assign({}, this.actionsBridge[action.type].call({}, state, action.payload));
+                return this.actionsBridge[action.type](state, action.payload);
             }
             return state;
         };
@@ -49,8 +58,12 @@ export class Sense {
 }
 
 Sense.GlobalReducers = {};
+Sense.Exports = {};
+Sense.from = function (exportNamespace) {
+    return Sense.Exports[exportNamespace];
+};
 
-export default class Component extends React.Component {
+export class Component extends React.Component {
     constructor(props) {
         super(props);
 
