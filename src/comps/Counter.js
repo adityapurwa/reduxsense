@@ -4,6 +4,17 @@ import * as React from "react";
 export class Counter extends Component {
     constructor(props) {
         super(props);
+
+        this.incrementCounter = this.incrementCounter.bind(this);
+        this.decrementCounter = this.decrementCounter.bind(this);
+    }
+
+    incrementCounter() {
+        this.sense.actions.INCREMENT_COUNTER({});
+    }
+
+    decrementCounter() {
+        this.sense.actions.DECREMENT_COUNTER({});
     }
 
     data() {
@@ -31,11 +42,11 @@ export class Counter extends Component {
                 </div>
                 <div className="counter-control">
                     <button className="counter-control-button"
-                            onClick={this.sense.actions.INCREMENT_COUNTER}>
+                            onClick={this.incrementCounter}>
                         +
                     </button>
                     <button className="counter-control-button"
-                            onClick={this.sense.actions.DECREMENT_COUNTER}>
+                            onClick={this.decrementCounter}>
                         -
                     </button>
                 </div>

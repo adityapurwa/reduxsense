@@ -1,58 +1,53 @@
 import * as React from "react";
 import {combineReducers} from "redux";
 
-class Sense {
+export class Sense {
 
     constructor(component) {
         this.component = component;
 
-        this.setupState();
+        this.setupInitialState();
         this.setupActions();
-        this.setupSubscription();
+        this.setupSubscriptions();
     }
 
-    setupState() {
-        // Initial state is taken from the component data().
+    setupInitialState() {
         this.state = this.component.data();
     }
 
     setupActions() {
-        // This is sense actions, not reducer.
-        let actions = this.component.actions();
-        Sense.GlobalReducers[this.component.props.ns] = (state = this.component.props.store.getState(), act) => {
-            if (actions.hasOwnProperty(act.type)) {
-                return Object.assign({}, actions[act.type](state, act.payload));
-            }
-            return this.component.data();
-        };
-        // This makes Reduxsense doesn't work with other reducers.
-        this.component.props.store.replaceReducer(combineReducers(Sense.GlobalReducers));
-        // This is for user to call from component e.g. this.sense.actions.ACTION_NAME
+        const actions = this.component.actions();
+
         this.actions = {};
-        for (let prop in actions) {
-            if (actions.hasOwnProperty(prop)) {
-                // Copy all action definitions from the component, and bind sense as context, replace the state with
-                // the value taken from the namespace
-                this.actions[prop] = ((payload) => {
+        this.actionsBridge = {};
+        for (const name in actions) {
+            if (actions.hasOwnProperty(name)) {
+                this.actions[name] = (payload) => {
                     this.component.props.store.dispatch({
-                        type: prop,
+                        type: name + "_" + this.component.props.ns,
                         payload: payload
-                    })
-                }).bind(this, this.component.props.store.getState()[this.component.props.ns]);
+                    });
+                };
+                this.actionsBridge[name + "_" + this.component.props.ns] = actions[name].bind(this.component);
             }
         }
+        Sense.GlobalReducers[this.component.props.ns] = (state = this.state, action) => {
+            if (this.actionsBridge.hasOwnProperty(action.type)) {
+                return Object.assign({}, this.actionsBridge[action.type].call({}, state, action.payload));
+            }
+            return state;
+        };
+        this.component.props.store.replaceReducer(combineReducers(Sense.GlobalReducers));
     }
 
-    setupSubscription() {
+    setupSubscriptions() {
         this.component.props.store.subscribe(() => {
-            // Allow user to use this.sense.state.state_name
             this.state = this.component.props.store.getState()[this.component.props.ns];
             this.component.forceUpdate();
         });
     }
 }
 
-// Global reducers is a combination of reducers created by Reduxsense
 Sense.GlobalReducers = {};
 
 export default class Component extends React.Component {
@@ -60,6 +55,5 @@ export default class Component extends React.Component {
         super(props);
 
         this.sense = new Sense(this);
-        this.state = this.sense.state;
     }
 }
