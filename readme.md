@@ -58,7 +58,6 @@ Simply run the [example/index.html](example/index.html) file, and you should see
 
 ## Important
 
-Reduxsense replaces your store reducers, so it might not work with your existing reducers.
 This is an experimental project and not optimized, use with caution.
 
 ## Documentation
@@ -68,10 +67,27 @@ This is an experimental project and not optimized, use with caution.
 Reduxsense wraps your component and add **senses** to it. The component senses
 will then be exposed to Redux store and reducers.
 
-### Store Passing
+### Reusing Your Reducers
 
-For now, you have to pass the `store` object from `createStore` as props to every children that might
-need to use that store.
+If you already have reducers, you have to register your reducer to Reduxsense global reducers.
+You can do this as below:
+
+```jsx harmony
+Sense.GlobalReducers["reducerkey"] = reducerFunction;
+```
+
+### Register Store
+
+Previously, you have to pass the store using props to all components. There is an idea to use
+context, but as React itself not recommending to use context yet, you can register your store
+by setting as below:
+
+```jsx harmony
+Sense.registerStore(store);
+```
+
+Where `store` is a redux store you obtain by using `createStore`. You do not have to pass the
+store anywhere else, once registered, Reduxsense will use that store.
 
 ### Defining States
 

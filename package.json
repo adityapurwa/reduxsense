@@ -11,15 +11,18 @@
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "eslint": "^4.10.0",
+    "prop-types": "^15.6.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
     "redux-devtools-extension": "^2.13.2",
+    "serve": "^6.4.1",
     "webpack": "^3.8.1"
   },
   "scripts": {
     "watch": "webpack --watch",
-    "dev": "webpack"
+    "dev": "webpack",
+    "serve": "serve"
   }
 }

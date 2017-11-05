@@ -11,8 +11,8 @@ export default class TodoApp extends Component {
     render() {
         return (
             <div className="todo-app">
-                <TodoForm ns="todo_app_form" store={this.props.store}></TodoForm>
-                <TodoList ns="todo_app_list" store={this.props.store}/>
+                <TodoForm ns="todo_app_form"></TodoForm>
+                <TodoList ns="todo_app_list"/>
             </div>
         )
     }

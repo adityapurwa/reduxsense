@@ -1,5 +1,6 @@
 import * as React from "react";
-import {combineReducers} from "redux";
+import { combineReducers } from "redux";
+import PropTypes from "prop-types"
 
 export class Sense {
 
@@ -32,7 +33,7 @@ export class Sense {
         for (const name in actions) {
             if (actions.hasOwnProperty(name)) {
                 this.actions[name] = (payload) => {
-                    this.component.props.store.dispatch({
+                    Sense._store.dispatch({
                         type: name + "_" + this.component.props.ns,
                         payload: payload
                     });
@@ -46,12 +47,12 @@ export class Sense {
             }
             return state;
         };
-        this.component.props.store.replaceReducer(combineReducers(Sense.GlobalReducers));
+        Sense._store.replaceReducer(combineReducers(Sense.GlobalReducers));
     }
 
     setupSubscriptions() {
-        this.component.props.store.subscribe(() => {
-            this.state = this.component.props.store.getState()[this.component.props.ns];
+        Sense._store.subscribe(() => {
+            this.state = Sense._store.getState()[this.component.props.ns];
             this.component.forceUpdate();
         });
     }
@@ -62,11 +63,14 @@ Sense.Exports = {};
 Sense.from = function (exportNamespace) {
     return Sense.Exports[exportNamespace];
 };
+Sense.registerStore = function(store){
+    Sense._store = store;
+}
 
 export class Component extends React.Component {
-    constructor(props) {
+    constructor(props, context) {
         super(props);
 
-        this.sense = new Sense(this);
-    }
+        this.sense = new Sense(this);        
+    }    
 }
